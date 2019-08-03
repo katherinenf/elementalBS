@@ -10,7 +10,7 @@ public class PeriodicTable : MonoBehaviour
     public Element[] elements;
 
     public Ship[] ships;
-    
+
     // the done button to show when all ships are placed
     public Button uiDoneButton;
 
@@ -18,11 +18,11 @@ public class PeriodicTable : MonoBehaviour
     private bool bombingEnabled;
 
     private Element bombTarget;
-    
+
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     private void OnEnable()
@@ -40,7 +40,7 @@ public class PeriodicTable : MonoBehaviour
                 ship.gameObject.SetActive(true);
             }
             else
-            { 
+            {
                 ship.gameObject.SetActive(false);
             }
             ship.SetMoveable(false);
@@ -50,7 +50,7 @@ public class PeriodicTable : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-       
+
     }
 
     public void OnDoneClick()
@@ -98,11 +98,9 @@ public class PeriodicTable : MonoBehaviour
     Element WorldToElement(Vector2 worldPos)
     {
         Vector2 localPos = worldPos - new Vector2(transform.position.x, transform.position.y);
-        
-        int x = (int)Mathf.Floor(localPos.x);
-        int y = (int)-Mathf.Floor(localPos.y + 1);
+        int x = TileGrid.WorldToTileIndex(localPos.x);
+        int y = TileGrid.WorldToTileIndex(-localPos.y);
         Element element = GetElement(x, y);
-        
         return element;
     }
 
@@ -125,14 +123,14 @@ public class PeriodicTable : MonoBehaviour
     {
         // find overlapping tiles
         List<Element> tiles = GetOverlappingElements(ship);
-        
+
         // check ship is fully on board
         if (tiles.Count != ship.shipSize)
         {
 
             return false;
         }
-        
+
         // check that no tiles already contain ships
         for (int i = 0; i < tiles.Count; i++)
         {
@@ -142,17 +140,17 @@ public class PeriodicTable : MonoBehaviour
                 return false;
             }
         }
-        
+
         // fill tiles
         for (int i = 0; i < tiles.Count; i++)
         {
             Element element = tiles[i];
             element.SetShip(ship);
         }
-        
+
         // associate tiles with ship
         ship.SetElements(tiles);
-        
+
         // update UI
         UpdateDoneBtn();
 
@@ -167,19 +165,19 @@ public class PeriodicTable : MonoBehaviour
             Vector3 offset;
             if (ship.rotated)
             {
-                offset = new Vector3(-i + ship.anchorOffset, 0, 0);
+                offset = new Vector3((-i + ship.anchorOffset) * TileGrid.kTileSize, 0, 0);
             }
             else
             {
-                offset = new Vector3(0, i - ship.anchorOffset, 0);
+                offset = new Vector3(0, (i - ship.anchorOffset) * TileGrid.kTileSize, 0);
             }
 
             Element element = WorldToElement(ship.transform.position + offset);
             if (element != null)
             {
-              eles.Add(element);  
+              eles.Add(element);
             }
-           
+
         }
 
         return eles;
@@ -198,11 +196,11 @@ public class PeriodicTable : MonoBehaviour
 
         // disassociate elements from ship
         ship.SetElements(new List<Element>());
-        
+
         // update UI
         UpdateDoneBtn();
     }
-    
+
     // update the visibility of the done button based on if all ships placed
     void UpdateDoneBtn()
     {
@@ -212,7 +210,7 @@ public class PeriodicTable : MonoBehaviour
         {
             allPlaced &= ship.IsPlaced();
         }
-        
+
         // update button visibility
         uiDoneButton.interactable = allPlaced;
     }
@@ -224,7 +222,7 @@ public class PeriodicTable : MonoBehaviour
             // find possible clicked tile
             Vector3 worldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Element element = WorldToElement(worldPos);
-            
+
             // if a tile was in fact clicked, set bomb target
             if (element != null && !element.IsBombed())
             {
@@ -235,7 +233,7 @@ public class PeriodicTable : MonoBehaviour
                 bombTarget = element;
                 bombTarget.SetAsTarget(true);
             }
-            
+
             // update done button state
             uiDoneButton.interactable = (bombTarget != null);
         }
@@ -254,5 +252,5 @@ public class PeriodicTable : MonoBehaviour
         return true;
 
     }
-    
+
 }

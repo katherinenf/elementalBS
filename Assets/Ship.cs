@@ -8,7 +8,7 @@ public class Ship : MonoBehaviour
     public bool rotated;
     public int shipSize;
     public int anchorOffset;
-    
+
     private bool grabbed;
     public PeriodicTable GM;
     private List<Element> elements;
@@ -16,7 +16,7 @@ public class Ship : MonoBehaviour
 
     private int currentHits;
     private bool isMoveable = true;
-    
+
     // Start is called before the first frame update
     void Start()
     {
@@ -33,24 +33,24 @@ public class Ship : MonoBehaviour
             grabbed = false;
             OnShipDropped();
         }
-        
+
         // while ship is grabbed, follow the mouse
         if (grabbed)
         {
             // rotate the ship when R is pressed
             if (Input.GetKeyDown(KeyCode.R))
             {
-              SetShipRotation(!rotated);  
+              SetShipRotation(!rotated);
             }
-            
+
             // follow the mouse
             Vector3 screenPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            screenPos.x = Mathf.Floor(screenPos.x) + .5f;
-            screenPos.y = Mathf.Floor(screenPos.y) + .5f;
+            screenPos.x = TileGrid.ClampToTileCenter(screenPos).x;
+            screenPos.y = TileGrid.ClampToTileCenter(screenPos).y;
             screenPos.z = 0f;
             transform.position = screenPos;
         }
-        
+
     }
 
    // called when user attempts to place ship on the board
@@ -88,7 +88,7 @@ public class Ship : MonoBehaviour
     {
         return elements;
     }
-    
+
     // assigns rotated and updates sprite
     void SetShipRotation(bool isRotated)
     {
