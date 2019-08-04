@@ -3,26 +3,35 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
+
+enum ElementIcon
+{
+    None,
+    Target,
+    Hit,
+    Miss
+}
+
 public class Element : MonoBehaviour
 {
+    // Periodic table properties
     public int period;
-
     public int group;
-
     public int number;
-
     public string symbol;
-
     public float mass;
+    public string elementName;
 
-    public string name;
-
+    // Texts
     public TextMeshPro numberText;
     public TextMeshPro symbolText;
     public TextMeshPro massText;
     public TextMeshPro nameText;
 
-    public GameObject target;
+    // Icons
+    public GameObject targetIcon;
+    public GameObject hitIcon;
+    public GameObject missIcon;
 
     [HideInInspector]
     public Ship ship;
@@ -39,6 +48,7 @@ public class Element : MonoBehaviour
         symbolText.text = symbol;
         massText.text = mass.ToString();
         nameText.text = name;
+        SetIcon(ElementIcon.None);
     }
 
     // Update is called once per frame
@@ -65,15 +75,17 @@ public class Element : MonoBehaviour
 
     public void Bomb()
     {
-        SetAsTarget(false);
+        sprite.color = Color.white;
         if (HasShip())
         {
-            sprite.color = Color.red;
+            //sprite.color = Color.red;
+            SetIcon(ElementIcon.Hit);
             ship.OnBomb();
         }
         else
         {
-            sprite.color = Color.blue;
+            SetIcon(ElementIcon.Miss);
+            //sprite.color = Color.blue;
         }
 
         isBombed = true;
@@ -84,11 +96,32 @@ public class Element : MonoBehaviour
         if (val)
         {
             sprite.color = Color.green;
+            SetIcon(ElementIcon.Target);
         }
         else
         {
             sprite.color = Color.white;
+            SetIcon(ElementIcon.None);
         }
-        target.SetActive(val);
+    }
+
+    void SetIcon(ElementIcon icon)
+    {
+        targetIcon.SetActive(false);
+        missIcon.SetActive(false);
+        hitIcon.SetActive(false);
+
+        switch(icon)
+        {
+        case ElementIcon.Target:
+            targetIcon.SetActive(true);
+            break;
+        case ElementIcon.Miss:
+            missIcon.SetActive(true);
+            break;
+        case ElementIcon.Hit:
+            hitIcon.SetActive(true);
+            break;
+        }
     }
 }

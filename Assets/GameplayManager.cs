@@ -94,18 +94,18 @@ public class GameplayManager : MonoBehaviour
     {
         switch(help)
         {
-            case HelpText.Placement:
-                placementHelp.SetActive(true);
-                bombHelp.SetActive(false);
-                break;
-            case HelpText.Bomb:
-                placementHelp.SetActive(false);
-                bombHelp.SetActive(true);
-                break;
-            case HelpText.None:
-                placementHelp.SetActive(false);
-                bombHelp.SetActive(false);
-                break;
+        case HelpText.Placement:
+            placementHelp.SetActive(true);
+            bombHelp.SetActive(false);
+            break;
+        case HelpText.Bomb:
+            placementHelp.SetActive(false);
+            bombHelp.SetActive(true);
+            break;
+        case HelpText.None:
+            placementHelp.SetActive(false);
+            bombHelp.SetActive(false);
+            break;
         }
     }
 
@@ -187,6 +187,7 @@ public class GameplayManager : MonoBehaviour
 
     public void ReturnToMenu()
     {
+        Input.ResetInputAxes();
         UnityEngine.SceneManagement.SceneManager.LoadScene("MenuScene");
     }
 }

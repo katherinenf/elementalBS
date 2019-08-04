@@ -6,6 +6,7 @@ public class MenuManager : MonoBehaviour
 {
     public void PlayGame()
     {
+        Input.ResetInputAxes();
         UnityEngine.SceneManagement.SceneManager.LoadScene("GameplayScene");
     }
 
