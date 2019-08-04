@@ -22,6 +22,8 @@ public class Element : MonoBehaviour
     public TextMeshPro massText;
     public TextMeshPro nameText;
 
+    public GameObject target;
+
     [HideInInspector]
     public Ship ship;
 
@@ -63,6 +65,7 @@ public class Element : MonoBehaviour
 
     public void Bomb()
     {
+        SetAsTarget(false);
         if (HasShip())
         {
             sprite.color = Color.red;
@@ -74,7 +77,6 @@ public class Element : MonoBehaviour
         }
 
         isBombed = true;
-
     }
 
     public void SetAsTarget(bool val)
@@ -87,5 +89,6 @@ public class Element : MonoBehaviour
         {
             sprite.color = Color.white;
         }
+        target.SetActive(val);
     }
 }
