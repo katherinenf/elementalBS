@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class Element : MonoBehaviour
@@ -7,23 +8,41 @@ public class Element : MonoBehaviour
     public int period;
 
     public int group;
-    
+
+    public int number;
+
+    public string symbol;
+
+    public float mass;
+
+    public string name;
+
+    public TextMeshPro numberText;
+    public TextMeshPro symbolText;
+    public TextMeshPro massText;
+    public TextMeshPro nameText;
+
+    [HideInInspector]
     public Ship ship;
 
     private SpriteRenderer sprite;
 
     private bool isBombed;
-    
+
     // Start is called before the first frame update
     void Start()
     {
         sprite = GetComponent<SpriteRenderer>();
+        numberText.text = number.ToString();
+        symbolText.text = symbol;
+        massText.text = mass.ToString();
+        nameText.text = name;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public bool HasShip()
@@ -40,7 +59,7 @@ public class Element : MonoBehaviour
     {
         return isBombed;
     }
-    
+
 
     public void Bomb()
     {
@@ -55,7 +74,7 @@ public class Element : MonoBehaviour
         }
 
         isBombed = true;
-        
+
     }
 
     public void SetAsTarget(bool val)

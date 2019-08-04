@@ -6,11 +6,18 @@ using UnityEngine.UI;
 
 enum GameplayPhase
 {
-    PlacementPlayer1, 
+    PlacementPlayer1,
     PlacementPlayer2,
     TurnPlayer1,
     TurnPlayer2,
     Victory
+}
+
+enum HelpText
+{
+    Placement,
+    Bomb,
+    None
 }
 
 public class GameplayManager : MonoBehaviour
@@ -20,14 +27,21 @@ public class GameplayManager : MonoBehaviour
     public GameObject player2Fleet;
 
     public Text turnText;
-    
+
+    public Text phaseText;
+
     public Text victoryText;
+
+    public GameObject placementHelp;
+
+    public GameObject bombHelp;
 
     public GameObject victoryScreen;
 
-
     // Currently active game phase
     private GameplayPhase phase;
+
+    private int turnNum;
 
     private static GameplayManager instance;
 
@@ -35,7 +49,7 @@ public class GameplayManager : MonoBehaviour
     {
         get { return instance; }
     }
-    
+
 
     private void Awake()
     {
@@ -46,16 +60,17 @@ public class GameplayManager : MonoBehaviour
     void Start()
     {
         phase = GameplayPhase.PlacementPlayer1;
-        turnText.text = "Player 1's Turn to Place";
+        phaseText.text = "<color=#7AE0FF>Player 1</color>'s Turn to Place";
         SetVisableFleet(1);
+        ShowHelpText(HelpText.Placement);
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
-    
+
     // updates scene to allow player2 to place ships
     void GoToPlacementPlayer2()
     {
@@ -64,7 +79,7 @@ public class GameplayManager : MonoBehaviour
 
         // update game phase
         phase = GameplayPhase.PlacementPlayer2;
-        turnText.text = "Player 2's Turn to Place";
+        phaseText.text = "<color=#7AE0FF>Player 2</color>'s Turn to Place";
 
     }
 
@@ -72,11 +87,36 @@ public class GameplayManager : MonoBehaviour
     {
         player1Fleet.SetActive(playerNum == 1);
         player2Fleet.SetActive(playerNum == 2);
-
     }
-    
+
+    // shows the provided help text and hides all of the others
+    void ShowHelpText(HelpText help)
+    {
+        switch(help)
+        {
+            case HelpText.Placement:
+                placementHelp.SetActive(true);
+                bombHelp.SetActive(false);
+                break;
+            case HelpText.Bomb:
+                placementHelp.SetActive(false);
+                bombHelp.SetActive(true);
+                break;
+            case HelpText.None:
+                placementHelp.SetActive(false);
+                bombHelp.SetActive(false);
+                break;
+        }
+    }
+
     void StartTurn(int playerNum)
     {
+        // Increment turn count only at the beginning of player 1's turn
+        if (playerNum == 1)
+        {
+            turnNum++;
+        }
+
         Debug.Log("starting player turn " + playerNum);
         int opPlayer = ToOppositePlayer(playerNum);
         SetVisableFleet(opPlayer);
@@ -84,8 +124,9 @@ public class GameplayManager : MonoBehaviour
         table.SetBombingEnabled(true);
         table.OnStartTurn();
         phase = (playerNum == 1) ? GameplayPhase.TurnPlayer1 : GameplayPhase.TurnPlayer2;
-        turnText.text = "Player " + playerNum + "'s Turn";
-
+        turnText.text = "Turn " + turnNum;
+        phaseText.text = "<color=#7AE0FF>Player " + playerNum + "</color>'s Turn";
+        ShowHelpText(HelpText.Bomb);
     }
 
     // invoked by done button during ship placement
@@ -141,6 +182,7 @@ public class GameplayManager : MonoBehaviour
         phase = GameplayPhase.Victory;
         victoryText.text = "Player " + playerNum + " wins!";
         victoryScreen.SetActive(true);
+        ShowHelpText(HelpText.None);
     }
 
     public void ReturnToMenu()
