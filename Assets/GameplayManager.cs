@@ -60,6 +60,7 @@ public class GameplayManager : MonoBehaviour
     void Start()
     {
         phase = GameplayPhase.PlacementPlayer1;
+        turnText.text = "";
         phaseText.text = "<color=#7AE0FF>Player 1</color>'s Turn to Place";
         SetVisableFleet(1);
         ShowHelpText(HelpText.Placement);
@@ -79,6 +80,7 @@ public class GameplayManager : MonoBehaviour
 
         // update game phase
         phase = GameplayPhase.PlacementPlayer2;
+        turnText.text = "";
         phaseText.text = "<color=#7AE0FF>Player 2</color>'s Turn to Place";
 
     }
