@@ -13,6 +13,7 @@ public class Ship : MonoBehaviour
     public PeriodicTable GM;
     private List<Element> elements;
     private Vector3 startPos;
+    private bool startRotation;
 
     private int currentHits;
     private bool isMoveable = true;
@@ -21,6 +22,7 @@ public class Ship : MonoBehaviour
     void Start()
     {
         startPos = transform.position;
+        startRotation = rotated;
         elements = new List<Element>();
     }
 
@@ -62,7 +64,7 @@ public class Ship : MonoBehaviour
         {
             // reset position and rotation
             transform.position = startPos;
-            SetShipRotation(false);
+            SetShipRotation(startRotation);
         }
     }
 

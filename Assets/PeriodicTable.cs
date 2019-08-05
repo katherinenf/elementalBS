@@ -13,6 +13,7 @@ public class PeriodicTable : MonoBehaviour
 
     // the done button to show when all ships are placed
     public Button uiDoneButton;
+    public Button uiBombButton;
 
     // when set clicking tiles bombs them
     private bool bombingEnabled;
@@ -25,14 +26,13 @@ public class PeriodicTable : MonoBehaviour
 
     }
 
-    private void OnEnable()
-    {
-        uiDoneButton.interactable = false;
-        bombTarget = null;
-    }
-
     public void OnStartTurn()
     {
+        uiDoneButton.gameObject.SetActive(false);
+        uiBombButton.gameObject.SetActive(true);
+        uiBombButton.interactable = false;
+        bombTarget = null;
+
         foreach (Ship ship in ships)
         {
             if (ship.IsDestroyed())
@@ -77,7 +77,7 @@ public class PeriodicTable : MonoBehaviour
     IEnumerator PlayBombSequence(Element target)
     {
         bombingEnabled = false;
-        uiDoneButton.interactable = false;
+        uiBombButton.interactable = false;
         target.Bomb();
         yield return new WaitForSeconds(.5f);
         if (AllShipsDestroyed())
@@ -235,7 +235,7 @@ public class PeriodicTable : MonoBehaviour
             }
 
             // update done button state
-            uiDoneButton.interactable = (bombTarget != null);
+            uiBombButton.interactable = (bombTarget != null);
         }
     }
 

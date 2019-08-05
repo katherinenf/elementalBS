@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -26,9 +27,9 @@ public class GameplayManager : MonoBehaviour
 
     public GameObject player2Fleet;
 
-    public Text turnText;
+    public TextMeshPro turnText;
 
-    public Text phaseText;
+    public TextMeshPro phaseText;
 
     public Text victoryText;
 
@@ -38,12 +39,18 @@ public class GameplayManager : MonoBehaviour
 
     public GameObject victoryScreen;
 
+    public GameObject[] hiddenAfterPlacement;
+
+    public SpriteRenderer topBanner;
+
     // Currently active game phase
     private GameplayPhase phase;
 
     private int turnNum;
 
     private static GameplayManager instance;
+    private static readonly Color Player1Color = new Color(1/255.0f, 105/255.0f, 223/255.0f);
+    private static readonly Color Player2Color = new Color(191/255.0f, 1/255.0f, 1/255.0f);
 
     public static GameplayManager Instance
     {
@@ -62,6 +69,7 @@ public class GameplayManager : MonoBehaviour
         phase = GameplayPhase.PlacementPlayer1;
         turnText.text = "";
         phaseText.text = "<color=#7AE0FF>Player 1</color>'s Turn to Place";
+        topBanner.color = Player1Color;
         SetVisableFleet(1);
         ShowHelpText(HelpText.Placement);
     }
@@ -80,8 +88,9 @@ public class GameplayManager : MonoBehaviour
 
         // update game phase
         phase = GameplayPhase.PlacementPlayer2;
+        topBanner.color = Player2Color;
         turnText.text = "";
-        phaseText.text = "<color=#7AE0FF>Player 2</color>'s Turn to Place";
+        phaseText.text = "<color=#ff7a7a>Player 2</color>'s Turn to Place";
 
     }
 
@@ -127,7 +136,10 @@ public class GameplayManager : MonoBehaviour
         table.OnStartTurn();
         phase = (playerNum == 1) ? GameplayPhase.TurnPlayer1 : GameplayPhase.TurnPlayer2;
         turnText.text = "Turn " + turnNum;
-        phaseText.text = "<color=#7AE0FF>Player " + playerNum + "</color>'s Turn";
+        topBanner.color = (playerNum == 1) ? Player1Color : Player2Color;
+
+        string colorHex = (playerNum == 1) ? "#7AE0FF" : "#ff7a7a";
+        phaseText.text = "<color=" + colorHex + ">Player " + playerNum + "</color>'s Turn";
         ShowHelpText(HelpText.Bomb);
     }
 
@@ -140,6 +152,12 @@ public class GameplayManager : MonoBehaviour
         }
         else if (phase == GameplayPhase.PlacementPlayer2)
         {
+            // Hide some specific objects after placement ends
+            foreach (GameObject obj in hiddenAfterPlacement)
+            {
+                obj.SetActive(false);
+            }
+
             StartTurn(1);
         }
         else
