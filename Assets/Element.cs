@@ -18,6 +18,8 @@ public class Element : MonoBehaviour
     public int period;
     public int group;
     public int number;
+    public int valence;
+    public int energyShells;
     public string symbol;
     public float mass;
     public string elementName;
