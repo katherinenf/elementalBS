@@ -43,6 +43,10 @@ public class GameplayManager : MonoBehaviour
 
     public SpriteRenderer topBanner;
 
+    public GameObject turnHider;
+
+    public Text turnHiderTitle;
+    
     // Currently active game phase
     private GameplayPhase phase;
 
@@ -72,6 +76,7 @@ public class GameplayManager : MonoBehaviour
         topBanner.color = Player1Color;
         SetVisableFleet(1);
         ShowHelpText(HelpText.Placement);
+        ShowTurnHider("<color=#7AE0FF>Player 1</color>'s Turn to Place");
     }
 
     // Update is called once per frame
@@ -83,6 +88,9 @@ public class GameplayManager : MonoBehaviour
     // updates scene to allow player2 to place ships
     void GoToPlacementPlayer2()
     {
+        // show turnHider
+        ShowTurnHider("<color=#ff7a7a>Player 2</color>'s Turn to Place");
+
         // deactivate player1 placement and activate player2 placement
         SetVisableFleet(2);
 
@@ -127,6 +135,7 @@ public class GameplayManager : MonoBehaviour
         {
             turnNum++;
         }
+        
 
         Debug.Log("starting player turn " + playerNum);
         int opPlayer = ToOppositePlayer(playerNum);
@@ -141,6 +150,7 @@ public class GameplayManager : MonoBehaviour
         string colorHex = (playerNum == 1) ? "#7AE0FF" : "#ff7a7a";
         phaseText.text = "<color=" + colorHex + ">Player " + playerNum + "</color>'s Turn";
         ShowHelpText(HelpText.Bomb);
+        ShowTurnHider("<color=" + colorHex + ">Player " + playerNum + "</color>'s Turn");
     }
 
     // invoked by done button during ship placement
@@ -209,5 +219,17 @@ public class GameplayManager : MonoBehaviour
     {
         Input.ResetInputAxes();
         UnityEngine.SceneManagement.SceneManager.LoadScene("MenuScene");
+    }
+
+    // called when player clicks turn hider before turn begins
+    public void OnTurnHiderClicked()
+    {
+        turnHider.SetActive(false);
+    }
+
+    void ShowTurnHider(string title)
+    {
+        turnHider.SetActive(true);
+        turnHiderTitle.text = title;
     }
 }
