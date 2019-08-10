@@ -49,8 +49,8 @@ public class GameplayManager : MonoBehaviour
     private int turnNum;
 
     private static GameplayManager instance;
-    private static readonly Color Player1Color = new Color(1/255.0f, 105/255.0f, 223/255.0f);
-    private static readonly Color Player2Color = new Color(191/255.0f, 1/255.0f, 1/255.0f);
+    private static readonly Color Player1Color = new Color(1/255.0f, 105/255.0f, 223/255.0f, .9f);
+    private static readonly Color Player2Color = new Color(191/255.0f, 1/255.0f, 1/255.0f, .7f);
 
     public static GameplayManager Instance
     {

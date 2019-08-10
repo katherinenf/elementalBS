@@ -23,7 +23,7 @@ public class PeriodicTable : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        UpdateDoneBtn();
     }
 
     public void OnStartTurn()

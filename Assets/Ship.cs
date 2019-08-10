@@ -19,7 +19,7 @@ public class Ship : MonoBehaviour
     private bool isMoveable = true;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         startPos = transform.position;
         startRotation = rotated;
@@ -58,7 +58,6 @@ public class Ship : MonoBehaviour
    // called when user attempts to place ship on the board
     void OnShipDropped()
     {
-        sprite.color = Color.white;
         bool didDrop = GM.TryDropShip(this);
         if (!didDrop)
         {
@@ -77,7 +76,6 @@ public class Ship : MonoBehaviour
         }
         grabbed = true;
         GM.PickUpShip(this);
-        sprite.color = Color.red;
 
     }
 
