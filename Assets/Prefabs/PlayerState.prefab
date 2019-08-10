@@ -220,7 +220,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 6979466230866779138}
-        m_MethodName: OnDoneClick
+        m_MethodName: OnFireClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -657,6 +657,9 @@ MonoBehaviour:
   - {fileID: 4981087934892851442}
   uiDoneButton: {fileID: 6529804765573127481}
   uiBombButton: {fileID: 5088591520066989309}
+  qPicker: {fileID: 0}
+  q1QuestionText: {fileID: 0}
+  q2QuestionText: {fileID: 0}
 --- !u!50 &4504371159494585517
 Rigidbody2D:
   serializedVersion: 4

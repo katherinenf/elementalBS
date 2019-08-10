@@ -81,12 +81,6 @@ public class GameplayManager : MonoBehaviour
         ShowTurnHider("<color=#7AE0FF>Player 1</color>'s Turn to Place");
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
     // updates scene to allow player2 to place ships
     void GoToPlacementPlayer2()
     {
@@ -143,7 +137,7 @@ public class GameplayManager : MonoBehaviour
         int opPlayer = ToOppositePlayer(playerNum);
         SetVisableFleet(opPlayer);
         PeriodicTable table = GetFleetForPlayer(opPlayer).GetComponentInChildren<PeriodicTable>();
-        table.SetBombingEnabled(true);
+        table.SetBombingEnabled(false);
         table.OnStartTurn();
         phase = (playerNum == 1) ? GameplayPhase.TurnPlayer1 : GameplayPhase.TurnPlayer2;
         turnText.text = "Turn " + turnNum;
@@ -214,6 +208,18 @@ public class GameplayManager : MonoBehaviour
         }
     }
 
+    public PeriodicTable GetCurrentTable()
+    {
+        switch (phase)
+        {
+            case GameplayPhase.PlacementPlayer1:
+            case GameplayPhase.TurnPlayer2: return GetFleetForPlayer(1).GetComponentInChildren<PeriodicTable>();
+            case GameplayPhase.PlacementPlayer2:
+            case GameplayPhase.TurnPlayer1: return GetFleetForPlayer(2).GetComponentInChildren<PeriodicTable>();
+            default: return null;
+        }
+    }
+
     public void Victory()
     {
         int playerNum = (phase == GameplayPhase.TurnPlayer1) ? 1 : 2;
@@ -234,6 +240,12 @@ public class GameplayManager : MonoBehaviour
     {
         Input.ResetInputAxes();
         turnHider.SetActive(false);
+
+        if (phase >= GameplayPhase.TurnPlayer1)
+        {
+            PeriodicTable table = GetCurrentTable();
+            table.SetBombingEnabled(true);
+        }
     }
 
     void ShowTurnHider(string title)

@@ -18,7 +18,6 @@ public class PeriodicTable : MonoBehaviour
     public Text q1QuestionText;
     public Text q2QuestionText;
 
-
     // when set clicking tiles bombs them
     private bool bombingEnabled;
 
@@ -53,25 +52,12 @@ public class PeriodicTable : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
     public void OnDoneClick()
     {
-        if (bombingEnabled)
-        {
-            CommitBombTarget();
-        }
-        else
-        {
-            GameplayManager.Instance.ShipPlacementComplete();
-        }
+        GameplayManager.Instance.ShipPlacementComplete();
     }
 
-    void CommitBombTarget()
+    public void OnFireClick()
     {
         if (bombTarget != null)
         {
