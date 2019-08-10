@@ -41,12 +41,14 @@ public class GameplayManager : MonoBehaviour
 
     public GameObject[] hiddenAfterPlacement;
 
+    public GameObject[] shownAfterPlacement;
+
     public SpriteRenderer topBanner;
 
     public GameObject turnHider;
 
     public Text turnHiderTitle;
-    
+
     // Currently active game phase
     private GameplayPhase phase;
 
@@ -135,7 +137,7 @@ public class GameplayManager : MonoBehaviour
         {
             turnNum++;
         }
-        
+
 
         Debug.Log("starting player turn " + playerNum);
         int opPlayer = ToOppositePlayer(playerNum);
@@ -166,6 +168,12 @@ public class GameplayManager : MonoBehaviour
             foreach (GameObject obj in hiddenAfterPlacement)
             {
                 obj.SetActive(false);
+            }
+
+            // Show some specific objects after placement ends
+            foreach (GameObject obj in shownAfterPlacement)
+            {
+                obj.SetActive(true);
             }
 
             StartTurn(1);
@@ -224,6 +232,7 @@ public class GameplayManager : MonoBehaviour
     // called when player clicks turn hider before turn begins
     public void OnTurnHiderClicked()
     {
+        Input.ResetInputAxes();
         turnHider.SetActive(false);
     }
 

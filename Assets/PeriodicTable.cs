@@ -14,11 +14,17 @@ public class PeriodicTable : MonoBehaviour
     // the done button to show when all ships are placed
     public Button uiDoneButton;
     public Button uiBombButton;
+    public QuestionPicker qPicker;
+    public Text q1QuestionText;
+    public Text q2QuestionText;
+
 
     // when set clicking tiles bombs them
     private bool bombingEnabled;
 
     private Element bombTarget;
+    private IQuestion q1;
+    private IQuestion q2;
 
     // Start is called before the first frame update
     void Start()
@@ -69,9 +75,23 @@ public class PeriodicTable : MonoBehaviour
     {
         if (bombTarget != null)
         {
+            // evaluate questions
+            if(!q1.Evaluate(bombTarget, 1) || !q2.Evaluate(bombTarget, 1))
+            {
+                bombTarget.SetAsTarget(false);
+                bombTarget = ChooseRandomElement();
+            }
+            //if either question is wrong assign bomb target to random
             StartCoroutine("PlayBombSequence", bombTarget);
 
         }
+    }
+
+    Element ChooseRandomElement()
+    {
+        Element[] valid = Array.FindAll(elements, e => e != null);
+        int index = UnityEngine.Random.Range(0, valid.Length);
+        return valid[index];
     }
 
     IEnumerator PlayBombSequence(Element target)
@@ -224,7 +244,7 @@ public class PeriodicTable : MonoBehaviour
             Element element = WorldToElement(worldPos);
 
             // if a tile was in fact clicked, set bomb target
-            if (element != null && !element.IsBombed())
+            if (element != null && !element.IsBombed() && element != bombTarget)
             {
                 if (bombTarget != null)
                 {
@@ -232,6 +252,16 @@ public class PeriodicTable : MonoBehaviour
                 }
                 bombTarget = element;
                 bombTarget.SetAsTarget(true);
+
+                // select questions
+                q1 = qPicker.Choose(bombTarget);
+                q2 = qPicker.Choose(bombTarget);
+
+
+                // update input text fields
+                q1QuestionText.text = q1.GetQuestionText(bombTarget);
+                q2QuestionText.text = q2.GetQuestionText(bombTarget);
+
             }
 
             // update done button state
