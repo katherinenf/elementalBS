@@ -48,7 +48,12 @@ public class Element : MonoBehaviour
         sprite = GetComponent<SpriteRenderer>();
         numberText.text = number.ToString();
         symbolText.text = symbol;
-        massText.text = mass.ToString();
+        if (mass > 0)
+        {
+            
+            massText.text = mass.ToString();
+
+        }
         nameText.text = name;
         SetIcon(ElementIcon.None);
     }
