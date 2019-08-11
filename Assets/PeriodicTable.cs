@@ -15,8 +15,8 @@ public class PeriodicTable : MonoBehaviour
     public Button uiDoneButton;
     public Button uiBombButton;
     public QuestionPicker qPicker;
-    public Text q1QuestionText;
-    public Text q2QuestionText;
+    public UIQuestion uiQuestion1;
+    public UIQuestion uiQuestion2;
 
     // when set clicking tiles bombs them
     private bool bombingEnabled;
@@ -33,6 +33,8 @@ public class PeriodicTable : MonoBehaviour
 
     public void OnStartTurn()
     {
+        uiQuestion1.Clear();
+        uiQuestion2.Clear();
         uiDoneButton.gameObject.SetActive(false);
         uiBombButton.gameObject.SetActive(true);
         uiBombButton.interactable = false;
@@ -59,7 +61,7 @@ public class PeriodicTable : MonoBehaviour
 
     public void OnFireClick()
     {
-        if (bombTarget != null)
+        if (bombingEnabled && bombTarget != null)
         {
             // evaluate questions
             if(!q1.Evaluate(bombTarget, 1) || !q2.Evaluate(bombTarget, 1))
@@ -83,7 +85,6 @@ public class PeriodicTable : MonoBehaviour
     IEnumerator PlayBombSequence(Element target)
     {
         bombingEnabled = false;
-        uiBombButton.interactable = false;
         target.Bomb();
         yield return new WaitForSeconds(.5f);
         if (AllShipsDestroyed())
@@ -243,11 +244,9 @@ public class PeriodicTable : MonoBehaviour
                 q1 = qPicker.Choose(bombTarget);
                 q2 = qPicker.Choose(bombTarget);
 
-
-                // update input text fields
-                q1QuestionText.text = q1.GetQuestionText(bombTarget);
-                q2QuestionText.text = q2.GetQuestionText(bombTarget);
-
+                // update question UIs
+                uiQuestion1.Load(bombTarget, q1);
+                uiQuestion2.Load(bombTarget, q2);
             }
 
             // update done button state
