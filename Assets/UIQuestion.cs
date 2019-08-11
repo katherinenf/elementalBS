@@ -8,12 +8,23 @@ public class UIQuestion : MonoBehaviour
     public Image background;
     public AnswerInputSpinner spinner;
     public Sprite disabledBackground;
+    public GameObject correctIcon;
+    public GameObject wrongIcon;
 
     public void Clear()
     {
+        // Clear text
         questionText.text = "-";
+
+        // Prevent input
         spinner.disabled = true;
+
+        // Gray out background
         background.overrideSprite = disabledBackground;
+
+        // Hide icons
+        correctIcon.SetActive(false);
+        wrongIcon.SetActive(false);
     }
 
     public void Load(Element e, IQuestion question)
@@ -30,5 +41,17 @@ public class UIQuestion : MonoBehaviour
 
         // Clear the disabled background override
         background.overrideSprite = null;
+    }
+
+    public void ShowAnswer(bool userCorrect)
+    {
+        if (userCorrect)
+        {
+            correctIcon.SetActive(true);
+        }
+        else
+        {
+            wrongIcon.SetActive(true);
+        }
     }
 }

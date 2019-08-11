@@ -50,18 +50,12 @@ public class Element : MonoBehaviour
         symbolText.text = symbol;
         if (mass > 0)
         {
-            
+
             massText.text = mass.ToString();
 
         }
         nameText.text = name;
         SetIcon(ElementIcon.None);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 
     public bool HasShip()
@@ -78,7 +72,6 @@ public class Element : MonoBehaviour
     {
         return isBombed;
     }
-
 
     public void Bomb()
     {

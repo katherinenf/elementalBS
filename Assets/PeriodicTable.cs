@@ -63,15 +63,19 @@ public class PeriodicTable : MonoBehaviour
     {
         if (bombingEnabled && bombTarget != null)
         {
-            // evaluate questions
-            if(!q1.Evaluate(bombTarget, 1) || !q2.Evaluate(bombTarget, 1))
+            bool q1Correct = q1.Evaluate(bombTarget, 1);
+            bool q2Correct = q2.Evaluate(bombTarget, 1);
+
+            // Evaluate target
+            if(!q1Correct || !q2Correct)
             {
                 bombTarget.SetAsTarget(false);
                 bombTarget = ChooseRandomElement();
+                bombTarget.SetAsTarget(true);
             }
-            //if either question is wrong assign bomb target to random
-            StartCoroutine("PlayBombSequence", bombTarget);
 
+            //if either question is wrong assign bomb target to random
+            StartCoroutine(PlayEndOfTurnSequence(q1Correct, q2Correct, bombTarget));
         }
     }
 
@@ -82,11 +86,23 @@ public class PeriodicTable : MonoBehaviour
         return valid[index];
     }
 
-    IEnumerator PlayBombSequence(Element target)
+    IEnumerator PlayEndOfTurnSequence(bool q1Correct, bool q2Correct, Element target)
     {
+        // Prevent further input
         bombingEnabled = false;
+
+        // Q1 animation
+        uiQuestion1.ShowAnswer(q1Correct);
+        yield return new WaitForSeconds(1f);
+
+        // Q2 animation
+        uiQuestion2.ShowAnswer(q2Correct);
+        yield return new WaitForSeconds(1f);
+
+        // Play the bombing
         target.Bomb();
-        yield return new WaitForSeconds(.5f);
+        yield return new WaitForSeconds(1f);
+
         if (AllShipsDestroyed())
         {
             GameplayManager.Instance.Victory();
