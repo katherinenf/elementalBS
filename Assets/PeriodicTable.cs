@@ -63,29 +63,36 @@ public class PeriodicTable : MonoBehaviour
     {
         if (bombingEnabled && bombTarget != null)
         {
+            // Evaluate target
             bool q1Correct = q1.Evaluate(bombTarget, 1);
             bool q2Correct = q2.Evaluate(bombTarget, 1);
 
-            // Evaluate target
             if(!q1Correct || !q2Correct)
             {
+                //if either question is wrong assign bomb target to random
                 bombTarget.SetAsTarget(false);
                 bombTarget = ChooseRandomElement();
                 bombTarget.SetAsTarget(true);
             }
 
-            //if either question is wrong assign bomb target to random
+            // Run the animation
             StartCoroutine(PlayEndOfTurnSequence(q1Correct, q2Correct, bombTarget));
         }
     }
 
+    // Returns a random element that has not already been bombed
     Element ChooseRandomElement()
     {
-        Element[] valid = Array.FindAll(elements, e => e != null);
+        // Choose only from the non-null elements that have not already been bombed
+        Element[] valid = Array.FindAll(elements, e => e != null && !e.IsBombed());
+
+        // Select a random element
         int index = UnityEngine.Random.Range(0, valid.Length);
+
         return valid[index];
     }
 
+    // Coroutine that animates the happity-haps at the end of the turn
     IEnumerator PlayEndOfTurnSequence(bool q1Correct, bool q2Correct, Element target)
     {
         // Prevent further input
