@@ -10,6 +10,11 @@ public class UIQuestion : MonoBehaviour
     public Sprite disabledBackground;
     public GameObject correctIcon;
     public GameObject wrongIcon;
+    
+    public int value
+    {
+        get { return spinner.value; }
+    }
 
     public void Clear()
     {

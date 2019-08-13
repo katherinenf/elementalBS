@@ -64,8 +64,8 @@ public class PeriodicTable : MonoBehaviour
         if (bombingEnabled && bombTarget != null)
         {
             // Evaluate target
-            bool q1Correct = q1.Evaluate(bombTarget, 1);
-            bool q2Correct = q2.Evaluate(bombTarget, 1);
+            bool q1Correct = q1.Evaluate(bombTarget, uiQuestion1.value);
+            bool q2Correct = q2.Evaluate(bombTarget, uiQuestion2.value);
 
             if(!q1Correct || !q2Correct)
             {
@@ -265,7 +265,7 @@ public class PeriodicTable : MonoBehaviour
 
                 // select questions
                 q1 = qPicker.Choose(bombTarget);
-                q2 = qPicker.Choose(bombTarget);
+                q2 = qPicker.Choose(bombTarget, new List<IQuestion>() { q1 });
 
                 // update question UIs
                 uiQuestion1.Load(bombTarget, q1);

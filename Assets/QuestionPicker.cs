@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public interface IQuestion
@@ -102,29 +103,40 @@ class EnergyShellsNumberQuestion : IQuestion
 // provides the logic for selecting a question
 public class QuestionPicker : MonoBehaviour
 {
+    IQuestion valenceQuestion;
     IQuestion[] pool;
 
     void Awake()
     {
+        valenceQuestion = new ValenceNumberQuestion();
         pool = new IQuestion[] {
             new GroupNumberQuestion(),
             new PeriodNumberQuestion(),
             new EnergyShellsNumberQuestion(),
             new AtomicNumberQuestion(),
-            new ValenceNumberQuestion()
+            valenceQuestion
         };
     }
 
-    //returns a valid question for the provided element
-    public IQuestion Choose(Element e)
+    // returns a valid question for the provided element  while obeying optionally omitted questions
+    public IQuestion Choose(Element e, List<IQuestion> omit = null)
     {
-        int max = pool.Length;
+        if (omit == null)
+        {
+            omit = new List<IQuestion>();
+        }
+
         // if element is in groups 3-12 8th graders will never need to determine the valance number
         if(e.group >= 3 && e.group <= 12)
         {
-            max = pool.Length - 1;
+            omit.Add(valenceQuestion);
         }
-        int index = Random.Range(0, max);
-        return pool[index];
+
+        // Build the valid question pool by removing the omitted questions
+        List<IQuestion> validPool = pool.Except(omit).ToList();
+
+        // Select and return a random valid question
+        int index = Random.Range(0, validPool.Count);
+        return validPool[index];
     }
 }
