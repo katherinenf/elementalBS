@@ -246,8 +246,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 396.2, y: 152}
-  m_SizeDelta: {x: 1116.2, y: 245.4}
+  m_AnchoredPosition: {x: 374.5, y: 175.3}
+  m_SizeDelta: {x: 1039.2, y: 245.4}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!1 &250061973
 GameObject:
@@ -4621,7 +4621,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!212 &1703764789
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -4807,7 +4807,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!212 &1829524775
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -7478,16 +7478,6 @@ PrefabInstance:
       propertyPath: uiQuestion2
       value: 
       objectReference: {fileID: 818182065}
-    - target: {fileID: 6275586889010505974, guid: e6b6492e9121f56409fb610244202037,
-        type: 3}
-      propertyPath: m_Color.r
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6275586889010505974, guid: e6b6492e9121f56409fb610244202037,
-        type: 3}
-      propertyPath: m_Color.g
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 7110112580876798966, guid: e6b6492e9121f56409fb610244202037,
         type: 3}
       propertyPath: m_Mesh
@@ -13235,8 +13225,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6117646149357425971, guid: e6b6492e9121f56409fb610244202037,
         type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 6.5561523
+      propertyPath: m_AnchoredPosition.x
+      value: -163.7998
       objectReference: {fileID: 0}
     - target: {fileID: 9202179890837813868, guid: e6b6492e9121f56409fb610244202037,
         type: 3}
@@ -13418,10 +13408,10 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 0}
-    - target: {fileID: 6058607102782558363, guid: e6b6492e9121f56409fb610244202037,
+    - target: {fileID: 3037459468678238094, guid: e6b6492e9121f56409fb610244202037,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e6b6492e9121f56409fb610244202037, type: 3}
