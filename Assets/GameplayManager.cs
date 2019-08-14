@@ -27,7 +27,7 @@ public class GameplayManager : MonoBehaviour
 
     public GameObject player2Fleet;
 
-    public TextMeshPro turnText;
+    public Text turnText;
 
     public TextMeshPro phaseText;
 
