@@ -73,7 +73,7 @@ class AtomicNumberQuestion : IQuestion
 
     public Vector2Int GetAnswerRange()
     {
-        return new Vector2Int(1, 111);
+        return new Vector2Int(1, 118);
     }
 
     public bool Evaluate(Element target, int userAnswer)
