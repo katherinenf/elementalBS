@@ -1,0 +1,11 @@
+* Drop shadow during ship placement
+* Try to handle mobile input correctly
+* Banners should show on >4:3 displays
+* Rotate button on touch/mobile only
+* Crosshairs cover too much of an element
+* Button arrows missing
+
+Done:
+    * Handle Input focus/tabbing
+    * Ships block clicking elements
+    * Seed questions based on per game seed + turn # + atomic #
