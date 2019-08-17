@@ -1,3 +1,4 @@
+﻿using System;
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -105,6 +106,7 @@ public class QuestionPicker : MonoBehaviour
 {
     IQuestion valenceQuestion;
     IQuestion[] pool;
+    int gameSalt;
 
     void Awake()
     {
@@ -116,6 +118,17 @@ public class QuestionPicker : MonoBehaviour
             new AtomicNumberQuestion(),
             valenceQuestion
         };
+
+        // Select a salt used for the entire game
+        gameSalt = UnityEngine.Random.Range(0, Int32.MaxValue);
+    }
+
+    int BuildSeed(Element e)
+    {
+        int turnNum = GameplayManager.Instance.turnNum;
+        int playerNum = (GameplayManager.Instance.phase == GameplayPhase.TurnPlayer1) ? 1 : 0;
+        int elementNum = e.number;
+        return gameSalt + (turnNum<<2) + (playerNum<<8) + (e.number<<16);
     }
 
     // returns a valid question for the provided element  while obeying optionally omitted questions
@@ -135,8 +148,11 @@ public class QuestionPicker : MonoBehaviour
         // Build the valid question pool by removing the omitted questions
         List<IQuestion> validPool = pool.Except(omit).ToList();
 
+        // Seed Random so that each element will always choose the same questions on a turn
+        UnityEngine.Random.InitState(BuildSeed(e));
+
         // Select and return a random valid question
-        int index = Random.Range(0, validPool.Count);
+        int index = UnityEngine.Random.Range(0, validPool.Count);
         return validPool[index];
     }
 }

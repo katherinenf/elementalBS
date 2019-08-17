@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class UIQuestion : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class UIQuestion : MonoBehaviour
     public Sprite disabledBackground;
     public GameObject correctIcon;
     public GameObject wrongIcon;
-    
+
     public int value
     {
         get { return spinner.value; }
@@ -58,5 +59,15 @@ public class UIQuestion : MonoBehaviour
         {
             wrongIcon.SetActive(true);
         }
+    }
+
+    // Make the "selected" input field (focus)
+    public void Select()
+    {
+        //if (!spinner.inputField.isFocused)
+        //{
+            spinner.inputField.Select();
+            spinner.inputField.ActivateInputField();
+        //}
     }
 }

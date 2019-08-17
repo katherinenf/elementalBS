@@ -33,6 +33,9 @@ public class PeriodicTable : MonoBehaviour
 
     public void OnStartTurn()
     {
+        // Disable bombing until the black screen (turn hider) is gone
+        bombingEnabled = false;
+
         uiQuestion1.Clear();
         uiQuestion2.Clear();
         uiDoneButton.gameObject.SetActive(false);
@@ -64,8 +67,8 @@ public class PeriodicTable : MonoBehaviour
         if (bombingEnabled && bombTarget != null)
         {
             // Evaluate target
-            bool q1Correct = q1.Evaluate(bombTarget, uiQuestion1.value);
-            bool q2Correct = q2.Evaluate(bombTarget, uiQuestion2.value);
+            bool q1Correct = true || q1.Evaluate(bombTarget, uiQuestion1.value);
+            bool q2Correct = true || q2.Evaluate(bombTarget, uiQuestion2.value);
 
             if(!q1Correct || !q2Correct)
             {
@@ -100,7 +103,7 @@ public class PeriodicTable : MonoBehaviour
 
         // Q1 animation
         uiQuestion1.ShowAnswer(q1Correct);
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(.25f);
 
         // Q2 animation
         uiQuestion2.ShowAnswer(q2Correct);
@@ -270,6 +273,9 @@ public class PeriodicTable : MonoBehaviour
                 // update question UIs
                 uiQuestion1.Load(bombTarget, q1);
                 uiQuestion2.Load(bombTarget, q2);
+
+                // focus the first questions input field
+                uiQuestion1.Select();
             }
 
             // update done button state

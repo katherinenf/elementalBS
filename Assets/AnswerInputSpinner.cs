@@ -77,6 +77,20 @@ public class AnswerInputSpinner : MonoBehaviour
         }
     }
 
+    public void Update()
+    {
+        if (inputField.isFocused && Input.GetKeyDown(KeyCode.Tab))
+        {
+            Debug.Log("TAB");
+            Selectable next = inputField.FindSelectableOnDown();
+            if (next != null)
+            {
+                Debug.Log("next");
+                next.Select();
+            }
+        }
+    }
+
     public void Increment()
     {
         if (!disabled && inputField != null)

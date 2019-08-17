@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-enum GameplayPhase
+public enum GameplayPhase
 {
     PlacementPlayer1,
     PlacementPlayer2,
@@ -50,9 +50,9 @@ public class GameplayManager : MonoBehaviour
     public Text turnHiderTitle;
 
     // Currently active game phase
-    private GameplayPhase phase;
+    public GameplayPhase phase;
 
-    private int turnNum;
+    public int turnNum;
 
     private static GameplayManager instance;
     private static readonly Color Player1Color = new Color(1/255.0f, 105/255.0f, 223/255.0f, .9f);
@@ -76,8 +76,8 @@ public class GameplayManager : MonoBehaviour
         turnText.text = "";
         phaseText.text = "<color=#7AE0FF>Player 1</color>'s Turn to Place";
         topBanner.color = Player1Color;
-        SetVisableFleet(1);
-        ShowHelpText(HelpText.Placement);
+        SetVisibleTable(1);
+        SetHelpText(HelpText.Placement);
         ShowTurnHider("<color=#7AE0FF>Player 1</color>'s Turn to Place");
     }
 
@@ -88,7 +88,7 @@ public class GameplayManager : MonoBehaviour
         ShowTurnHider("<color=#ff7a7a>Player 2</color>'s Turn to Place");
 
         // deactivate player1 placement and activate player2 placement
-        SetVisableFleet(2);
+        SetVisibleTable(2);
 
         // update game phase
         phase = GameplayPhase.PlacementPlayer2;
@@ -98,14 +98,14 @@ public class GameplayManager : MonoBehaviour
 
     }
 
-    void SetVisableFleet(int playerNum)
+    void SetVisibleTable(int playerNum)
     {
         player1Fleet.SetActive(playerNum == 1);
         player2Fleet.SetActive(playerNum == 2);
     }
 
     // shows the provided help text and hides all of the others
-    void ShowHelpText(HelpText help)
+    void SetHelpText(HelpText help)
     {
         switch(help)
         {
@@ -132,20 +132,25 @@ public class GameplayManager : MonoBehaviour
             turnNum++;
         }
 
-
-        Debug.Log("starting player turn " + playerNum);
-        int opPlayer = ToOppositePlayer(playerNum);
-        SetVisableFleet(opPlayer);
-        PeriodicTable table = GetFleetForPlayer(opPlayer).GetComponentInChildren<PeriodicTable>();
-        table.SetBombingEnabled(false);
-        table.OnStartTurn();
+        Debug.Log("Starting player " + playerNum + "'s turn " + turnNum);
         phase = (playerNum == 1) ? GameplayPhase.TurnPlayer1 : GameplayPhase.TurnPlayer2;
+
+        // Swap visible tables
+        int opPlayer = ToOppositePlayer(playerNum);
+        SetVisibleTable(opPlayer);
+
+        // Prep the table
+        PeriodicTable table = GetTableForPlayer(opPlayer);
+        table.OnStartTurn();
+
+        // Update the UI texts
+        string colorHex = (playerNum == 1) ? "#7AE0FF" : "#ff7a7a";
         turnText.text = "Turn " + turnNum;
         topBanner.color = (playerNum == 1) ? Player1Color : Player2Color;
-
-        string colorHex = (playerNum == 1) ? "#7AE0FF" : "#ff7a7a";
         phaseText.text = "<color=" + colorHex + ">Player " + playerNum + "</color>'s Turn";
-        ShowHelpText(HelpText.Bomb);
+        SetHelpText(HelpText.Bomb);
+
+        // Enable the black screen
         ShowTurnHider("<color=" + colorHex + ">Player " + playerNum + "</color>'s Turn");
     }
 
@@ -196,15 +201,15 @@ public class GameplayManager : MonoBehaviour
         return playerNum % 2 + 1;
     }
 
-    GameObject GetFleetForPlayer(int playerNum)
+    PeriodicTable GetTableForPlayer(int playerNum)
     {
         if (playerNum == 1)
         {
-            return player1Fleet;
+            return player1Fleet.GetComponentInChildren<PeriodicTable>();
         }
         else
         {
-            return player2Fleet;
+            return player2Fleet.GetComponentInChildren<PeriodicTable>();
         }
     }
 
@@ -213,9 +218,9 @@ public class GameplayManager : MonoBehaviour
         switch (phase)
         {
             case GameplayPhase.PlacementPlayer1:
-            case GameplayPhase.TurnPlayer2: return GetFleetForPlayer(1).GetComponentInChildren<PeriodicTable>();
+            case GameplayPhase.TurnPlayer2: return GetTableForPlayer(1);
             case GameplayPhase.PlacementPlayer2:
-            case GameplayPhase.TurnPlayer1: return GetFleetForPlayer(2).GetComponentInChildren<PeriodicTable>();
+            case GameplayPhase.TurnPlayer1: return GetTableForPlayer(2);
             default: return null;
         }
     }
@@ -226,7 +231,7 @@ public class GameplayManager : MonoBehaviour
         phase = GameplayPhase.Victory;
         victoryText.text = "Player " + playerNum + " wins!";
         victoryScreen.SetActive(true);
-        ShowHelpText(HelpText.None);
+        SetHelpText(HelpText.None);
     }
 
     public void ReturnToMenu()

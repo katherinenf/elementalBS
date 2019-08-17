@@ -5,6 +5,7 @@ using UnityEngine;
 public class Ship : MonoBehaviour
 {
     public SpriteRenderer sprite;
+    public new Collider2D collider;
     public bool rotated;
     public int shipSize;
     public int anchorOffset;
@@ -126,5 +127,6 @@ public class Ship : MonoBehaviour
     public void SetMoveable(bool val)
     {
         isMoveable = val;
+        collider.enabled = isMoveable;
     }
 }

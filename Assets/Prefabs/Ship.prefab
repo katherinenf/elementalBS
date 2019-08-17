@@ -46,6 +46,7 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -70,12 +71,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 7e0ba609c715db941851cce8219e3a40, type: 3}
+  m_Sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1.36, y: 3.69}
+  m_Size: {x: 0.2, y: 0.2}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -98,8 +99,8 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.36, y: 3.69}
-    newSize: {x: 1.36, y: 3.69}
+    oldSize: {x: 0.2, y: 0.2}
+    newSize: {x: 0.2, y: 0.2}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
@@ -152,8 +153,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e65b9d1d382928647a5cd29436a4daae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 0
   sprite: {fileID: 2440973094051168917}
+  collider: {fileID: 1084739805836612154}
+  rotated: 0
+  shipSize: 0
+  anchorOffset: 0
+  GM: {fileID: 0}
 --- !u!50 &4507311073145995238
 Rigidbody2D:
   serializedVersion: 4
