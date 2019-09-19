@@ -67,8 +67,8 @@ public class PeriodicTable : MonoBehaviour
         if (bombingEnabled && bombTarget != null)
         {
             // Evaluate target
-            bool q1Correct = true || q1.Evaluate(bombTarget, uiQuestion1.value);
-            bool q2Correct = true || q2.Evaluate(bombTarget, uiQuestion2.value);
+            bool q1Correct = q1.Evaluate(bombTarget, uiQuestion1.value);
+            bool q2Correct = q2.Evaluate(bombTarget, uiQuestion2.value);
 
             if(!q1Correct || !q2Correct)
             {
