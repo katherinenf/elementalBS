@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -45,9 +43,7 @@ public class GameplayManager : MonoBehaviour
 
     public SpriteRenderer topBanner;
 
-    public GameObject turnHider;
-
-    public Text turnHiderTitle;
+    public TurnHider turnHider;
 
     // Currently active game phase
     public GameplayPhase phase;
@@ -72,7 +68,7 @@ public class GameplayManager : MonoBehaviour
         GameplayManager.instance = this;
         if (GameConfig.Instance.useAI)
         {
-            //opponentAI = new OpponentAI();
+            opponentAI = new OpponentAI();
         }
     }
 
@@ -119,7 +115,7 @@ public class GameplayManager : MonoBehaviour
             yield return RunBombingPhase(2);
 
             // Exit while loop if player 2 wins
-            if (!CheckVictoryCondition(2))
+            if (CheckVictoryCondition(2))
             {
                 break;
             }
@@ -134,18 +130,18 @@ public class GameplayManager : MonoBehaviour
     {
         phase = (playerNum == 1) ? GameplayPhase.PlacementPlayer1 : GameplayPhase.PlacementPlayer2;
         SetHelpText(HelpText.Placement);
-        turnText.text = "";
 
         if (playerNum == 2 && opponentAI != null)
         {
             opponentAI.PlaceShips(GetTableForPlayer(2));
+            yield return turnHider.ShowForSeconds(GetPlayerName(playerNum) + " is placing their ships", 5);
             EndPhase();
         }
         else
         {
             SetVisibleTable(playerNum);
             SetHeader(playerNum, phase);
-            ShowTurnHider(playerNum, phase);
+            yield return turnHider.ShowUntilClick(GetPlayerName(playerNum) + "'s Turn to Place");
 
             // Wait for player end phase
             phaseComplete = false;
@@ -166,18 +162,29 @@ public class GameplayManager : MonoBehaviour
 
         // Prep the table
         PeriodicTable table = GetTableForPlayer(opPlayer);
-        table.OnStartTurn();
+        table.OnStartTurn(playerNum == 2 && opponentAI != null);
 
         // Update the UI texts
         SetHeader(playerNum, phase);
-        SetHelpText(HelpText.Bomb);
-        ShowTurnHider(playerNum, phase);
-
-        // Wait for player end phase
-        phaseComplete = false;
-        while (!phaseComplete)
+        if (playerNum == 2 && opponentAI != null)
         {
-            yield return null;
+            SetHelpText(HelpText.None);
+            yield return turnHider.ShowForSeconds(GetPlayerName(playerNum) + "'s Turn", 2);
+            yield return opponentAI.BombTile(table);
+            EndPhase();
+        } 
+        else
+        {
+            SetHelpText(HelpText.Bomb);
+            yield return turnHider.ShowUntilClick(GetPlayerName(playerNum) + "'s Turn");
+            table.SetBombingEnabled(true);
+
+            // Wait for player end phase
+            phaseComplete = false;
+            while (!phaseComplete)
+            {
+                yield return null;
+            }
         }
     }
 
@@ -192,7 +199,7 @@ public class GameplayManager : MonoBehaviour
     {
         int playerNum = (phase == GameplayPhase.TurnPlayer1) ? 1 : 2;
         phase = GameplayPhase.Victory;
-        victoryText.text = "Player " + playerNum + " wins!";
+        victoryText.text = GetPlayerName(playerNum) + " wins!";
         victoryScreen.SetActive(true);
         SetHelpText(HelpText.None);
     }
@@ -230,13 +237,12 @@ public class GameplayManager : MonoBehaviour
 
     void SetHeader(int playerNum, GameplayPhase phase)
     {
-        string colorHex = GetPlayerColor(playerNum);
         switch (phase)
         {
             case GameplayPhase.PlacementPlayer1: // intentional fall-through
             case GameplayPhase.PlacementPlayer2:
             {
-                phaseText.text = "<color=" + colorHex + ">Player " + playerNum + "</color>'s Turn to Place";
+                phaseText.text = GetPlayerName(playerNum) + "'s Turn to Place";
                 topBanner.color = (playerNum == 1) ? Player1Color : Player2Color;
                 break;
 
@@ -244,7 +250,7 @@ public class GameplayManager : MonoBehaviour
             case GameplayPhase.TurnPlayer1:
             case GameplayPhase.TurnPlayer2:
             {
-                phaseText.text = "<color=" + colorHex + ">Player " + playerNum + "</color>'s Turn";
+                phaseText.text = GetPlayerName(playerNum) + "'s Turn";
                 topBanner.color = (playerNum == 1) ? Player1Color : Player2Color;
                 break;
 
@@ -256,11 +262,6 @@ public class GameplayManager : MonoBehaviour
     int ToOppositePlayer(int playerNum)
     {
         return playerNum % 2 + 1;
-    }
-    
-    string GetPlayerColor(int playerNum)
-    {
-        return (playerNum == 1) ? "#7AE0FF" : "#ff7a7a";
     }
 
     PeriodicTable GetTableForPlayer(int playerNum)
@@ -293,39 +294,13 @@ public class GameplayManager : MonoBehaviour
         UnityEngine.SceneManagement.SceneManager.LoadScene("MenuScene");
     }
 
-    // called when player clicks turn hider before turn begins
-    public void OnTurnHiderClicked()
+    string GetPlayerName(int playerNum)
     {
-        Input.ResetInputAxes();
-        turnHider.SetActive(false);
-
-        if (phase >= GameplayPhase.TurnPlayer1)
+        string colorHex = (playerNum == 1) ? "#7AE0FF" : "#ff7a7a";
+        if (playerNum == 2 && opponentAI !=null)
         {
-            PeriodicTable table = GetCurrentTable();
-            table.SetBombingEnabled(true);
+            return "The <color=" + colorHex + ">Computer</color>";
         }
-    }
-
-    void ShowTurnHider(int playerNum, GameplayPhase phase)
-    {
-        string colorHex = GetPlayerColor(playerNum);
-        switch (phase)
-        {
-            case GameplayPhase.PlacementPlayer1: // intentional fall-through
-            case GameplayPhase.PlacementPlayer2:
-                {
-                    turnHiderTitle.text = "<color=" + colorHex + ">Player " + playerNum + "</color>'s Turn to Place";
-                    break;
-
-                }
-            case GameplayPhase.TurnPlayer1:
-            case GameplayPhase.TurnPlayer2:
-                {
-                    turnHiderTitle.text = "<color=" + colorHex + ">Player " + playerNum + "</color>'s Turn";
-                    break;
-
-                }
-        }
-        turnHider.SetActive(true);
+        return "<color=" + colorHex + ">Player " + playerNum + "</color>";
     }
 }

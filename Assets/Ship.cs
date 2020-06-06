@@ -129,4 +129,11 @@ public class Ship : MonoBehaviour
         isMoveable = val;
         collider.enabled = isMoveable;
     }
+
+    public void SetAlpha(float alpha)
+    {
+        Color c = sprite.color;
+        c.a = alpha;
+        sprite.color = c;
+    }
 }

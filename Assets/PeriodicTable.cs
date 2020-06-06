@@ -31,7 +31,7 @@ public class PeriodicTable : MonoBehaviour
         UpdateDoneBtn();
     }
 
-    public void OnStartTurn()
+    public void OnStartTurn(bool showShipGhosts)
     {
         // Disable bombing until the black screen (turn hider) is gone
         bombingEnabled = false;
@@ -48,10 +48,19 @@ public class PeriodicTable : MonoBehaviour
             if (ship.IsDestroyed())
             {
                 ship.gameObject.SetActive(true);
+                ship.SetAlpha(1.0f);
             }
             else
             {
-                ship.gameObject.SetActive(false);
+                if (showShipGhosts)
+                {
+                    ship.gameObject.SetActive(true);
+                    ship.SetAlpha(.4f);
+                }
+                else
+                {
+                    ship.gameObject.SetActive(false);
+                }
             }
             ship.SetMoveable(false);
         }
