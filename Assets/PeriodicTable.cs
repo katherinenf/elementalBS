@@ -59,7 +59,8 @@ public class PeriodicTable : MonoBehaviour
 
     public void OnDoneClick()
     {
-        GameplayManager.Instance.ShipPlacementComplete();
+        // Notify game manager
+        GameplayManager.Instance.EndPhase();
     }
 
     public void OnFireClick()
@@ -113,14 +114,8 @@ public class PeriodicTable : MonoBehaviour
         target.Bomb();
         yield return new WaitForSeconds(1f);
 
-        if (AllShipsDestroyed())
-        {
-            GameplayManager.Instance.Victory();
-        }
-        else
-        {
-            GameplayManager.Instance.EndTurn();
-        }
+        // Notify game manager
+        GameplayManager.Instance.EndPhase();
     }
 
     public void SetBombingEnabled(bool val)
@@ -160,7 +155,6 @@ public class PeriodicTable : MonoBehaviour
         // check ship is fully on board
         if (tiles.Count != ship.shipSize)
         {
-
             return false;
         }
 
@@ -169,7 +163,6 @@ public class PeriodicTable : MonoBehaviour
         {
             if (tiles[i].HasShip())
             {
-
                 return false;
             }
         }
@@ -283,7 +276,7 @@ public class PeriodicTable : MonoBehaviour
         }
     }
 
-    bool AllShipsDestroyed()
+    public bool AllShipsDestroyed()
     {
         foreach (Ship ship in ships)
         {
@@ -294,7 +287,5 @@ public class PeriodicTable : MonoBehaviour
         }
 
         return true;
-
     }
-
 }

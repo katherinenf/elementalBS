@@ -54,6 +54,10 @@ public class GameplayManager : MonoBehaviour
 
     public int turnNum;
 
+    public OpponentAI opponentAI;
+
+    private bool phaseComplete;
+
     private static GameplayManager instance;
     private static readonly Color Player1Color = new Color(1/255.0f, 105/255.0f, 223/255.0f, .9f);
     private static readonly Color Player2Color = new Color(191/255.0f, 1/255.0f, 1/255.0f, .7f);
@@ -63,76 +67,97 @@ public class GameplayManager : MonoBehaviour
         get { return instance; }
     }
 
-
     private void Awake()
     {
         GameplayManager.instance = this;
+        if (GameConfig.Instance.useAI)
+        {
+            //opponentAI = new OpponentAI();
+        }
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        phase = GameplayPhase.PlacementPlayer1;
-        turnText.text = "";
-        phaseText.text = "<color=#7AE0FF>Player 1</color>'s Turn to Place";
-        topBanner.color = Player1Color;
-        SetVisibleTable(1);
-        SetHelpText(HelpText.Placement);
-        ShowTurnHider("<color=#7AE0FF>Player 1</color>'s Turn to Place");
+        StartCoroutine(RunGameLoop());
+    }
+
+    IEnumerator RunGameLoop()
+    {
+        // Let both players place their ships
+        yield return RunPlacementPhase(1);
+        yield return RunPlacementPhase(2);
+
+        // Hide some specific objects after placement ends
+        foreach (GameObject obj in hiddenAfterPlacement)
+        {
+            obj.SetActive(false);
+        }
+
+        // Show some specific objects after placement ends
+        foreach (GameObject obj in shownAfterPlacement)
+        {
+            obj.SetActive(true);
+        }
+
+        // Loop bombing turns until victory is achieved
+        while (true)
+        {
+            // Update turn cpunt text each go-around
+            turnText.text = "Turn " + ++turnNum;
+
+            // Let player 1 bomb
+            yield return RunBombingPhase(1);
+
+            // Exit while loop if player 1 wins
+            if (CheckVictoryCondition(1))
+            {
+                break;
+            }
+
+            // Let player 2 bomb
+            yield return RunBombingPhase(2);
+
+            // Exit while loop if player 2 wins
+            if (!CheckVictoryCondition(2))
+            {
+                break;
+            }
+        }
+
+        // Show the victory screen
+        ShowVictory();
     }
 
     // updates scene to allow player2 to place ships
-    void GoToPlacementPlayer2()
+    IEnumerator RunPlacementPhase(int playerNum)
     {
-        // show turnHider
-        ShowTurnHider("<color=#ff7a7a>Player 2</color>'s Turn to Place");
-
-        // deactivate player1 placement and activate player2 placement
-        SetVisibleTable(2);
-
-        // update game phase
-        phase = GameplayPhase.PlacementPlayer2;
-        topBanner.color = Player2Color;
+        phase = (playerNum == 1) ? GameplayPhase.PlacementPlayer1 : GameplayPhase.PlacementPlayer2;
+        SetHelpText(HelpText.Placement);
         turnText.text = "";
-        phaseText.text = "<color=#ff7a7a>Player 2</color>'s Turn to Place";
 
-    }
-
-    void SetVisibleTable(int playerNum)
-    {
-        player1Fleet.SetActive(playerNum == 1);
-        player2Fleet.SetActive(playerNum == 2);
-    }
-
-    // shows the provided help text and hides all of the others
-    void SetHelpText(HelpText help)
-    {
-        switch(help)
+        if (playerNum == 2 && opponentAI != null)
         {
-        case HelpText.Placement:
-            placementHelp.SetActive(true);
-            bombHelp.SetActive(false);
-            break;
-        case HelpText.Bomb:
-            placementHelp.SetActive(false);
-            bombHelp.SetActive(true);
-            break;
-        case HelpText.None:
-            placementHelp.SetActive(false);
-            bombHelp.SetActive(false);
-            break;
+            opponentAI.PlaceShips(GetTableForPlayer(2));
+            EndPhase();
+        }
+        else
+        {
+            SetVisibleTable(playerNum);
+            SetHeader(playerNum, phase);
+            ShowTurnHider(playerNum, phase);
+
+            // Wait for player end phase
+            phaseComplete = false;
+            while (!phaseComplete)
+            {
+                yield return null;
+            }
         }
     }
 
-    void StartTurn(int playerNum)
+    IEnumerator RunBombingPhase(int playerNum)
     {
-        // Increment turn count only at the beginning of player 1's turn
-        if (playerNum == 1)
-        {
-            turnNum++;
-        }
-
-        Debug.Log("Starting player " + playerNum + "'s turn " + turnNum);
         phase = (playerNum == 1) ? GameplayPhase.TurnPlayer1 : GameplayPhase.TurnPlayer2;
 
         // Swap visible tables
@@ -144,54 +169,86 @@ public class GameplayManager : MonoBehaviour
         table.OnStartTurn();
 
         // Update the UI texts
-        string colorHex = (playerNum == 1) ? "#7AE0FF" : "#ff7a7a";
-        turnText.text = "Turn " + turnNum;
-        topBanner.color = (playerNum == 1) ? Player1Color : Player2Color;
-        phaseText.text = "<color=" + colorHex + ">Player " + playerNum + "</color>'s Turn";
+        SetHeader(playerNum, phase);
         SetHelpText(HelpText.Bomb);
+        ShowTurnHider(playerNum, phase);
 
-        // Enable the black screen
-        ShowTurnHider("<color=" + colorHex + ">Player " + playerNum + "</color>'s Turn");
-    }
-
-    // invoked by done button during ship placement
-    public void ShipPlacementComplete()
-    {
-        if (phase == GameplayPhase.PlacementPlayer1)
+        // Wait for player end phase
+        phaseComplete = false;
+        while (!phaseComplete)
         {
-            GoToPlacementPlayer2();
-        }
-        else if (phase == GameplayPhase.PlacementPlayer2)
-        {
-            // Hide some specific objects after placement ends
-            foreach (GameObject obj in hiddenAfterPlacement)
-            {
-                obj.SetActive(false);
-            }
-
-            // Show some specific objects after placement ends
-            foreach (GameObject obj in shownAfterPlacement)
-            {
-                obj.SetActive(true);
-            }
-
-            StartTurn(1);
-        }
-        else
-        {
-            Debug.LogError("ShipPlacementComplete called in invalid phase");
+            yield return null;
         }
     }
 
-    public void EndTurn()
+    bool CheckVictoryCondition(int playerNum)
     {
-        if (phase == GameplayPhase.TurnPlayer1)
+        int opPlayer = ToOppositePlayer(playerNum);
+        PeriodicTable table = GetTableForPlayer(opPlayer);
+        return table.AllShipsDestroyed();
+    }
+
+    public void ShowVictory()
+    {
+        int playerNum = (phase == GameplayPhase.TurnPlayer1) ? 1 : 2;
+        phase = GameplayPhase.Victory;
+        victoryText.text = "Player " + playerNum + " wins!";
+        victoryScreen.SetActive(true);
+        SetHelpText(HelpText.None);
+    }
+
+    public void EndPhase()
+    {
+        phaseComplete = true;
+    }
+
+    void SetVisibleTable(int playerNum)
+    {
+        player1Fleet.SetActive(playerNum == 1);
+        player2Fleet.SetActive(playerNum == 2);
+    }
+
+    // shows the provided help text and hides all of the others
+    void SetHelpText(HelpText help)
+    {
+        switch (help)
         {
-            StartTurn(2);
+            case HelpText.Placement:
+                placementHelp.SetActive(true);
+                bombHelp.SetActive(false);
+                break;
+            case HelpText.Bomb:
+                placementHelp.SetActive(false);
+                bombHelp.SetActive(true);
+                break;
+            case HelpText.None:
+                placementHelp.SetActive(false);
+                bombHelp.SetActive(false);
+                break;
         }
-        else
+    }
+
+    void SetHeader(int playerNum, GameplayPhase phase)
+    {
+        string colorHex = GetPlayerColor(playerNum);
+        switch (phase)
         {
-            StartTurn(1);
+            case GameplayPhase.PlacementPlayer1: // intentional fall-through
+            case GameplayPhase.PlacementPlayer2:
+            {
+                phaseText.text = "<color=" + colorHex + ">Player " + playerNum + "</color>'s Turn to Place";
+                topBanner.color = (playerNum == 1) ? Player1Color : Player2Color;
+                break;
+
+            }
+            case GameplayPhase.TurnPlayer1:
+            case GameplayPhase.TurnPlayer2:
+            {
+                phaseText.text = "<color=" + colorHex + ">Player " + playerNum + "</color>'s Turn";
+                topBanner.color = (playerNum == 1) ? Player1Color : Player2Color;
+                break;
+
+            }
         }
     }
 
@@ -199,6 +256,11 @@ public class GameplayManager : MonoBehaviour
     int ToOppositePlayer(int playerNum)
     {
         return playerNum % 2 + 1;
+    }
+    
+    string GetPlayerColor(int playerNum)
+    {
+        return (playerNum == 1) ? "#7AE0FF" : "#ff7a7a";
     }
 
     PeriodicTable GetTableForPlayer(int playerNum)
@@ -225,15 +287,6 @@ public class GameplayManager : MonoBehaviour
         }
     }
 
-    public void Victory()
-    {
-        int playerNum = (phase == GameplayPhase.TurnPlayer1) ? 1 : 2;
-        phase = GameplayPhase.Victory;
-        victoryText.text = "Player " + playerNum + " wins!";
-        victoryScreen.SetActive(true);
-        SetHelpText(HelpText.None);
-    }
-
     public void ReturnToMenu()
     {
         Input.ResetInputAxes();
@@ -253,9 +306,26 @@ public class GameplayManager : MonoBehaviour
         }
     }
 
-    void ShowTurnHider(string title)
+    void ShowTurnHider(int playerNum, GameplayPhase phase)
     {
+        string colorHex = GetPlayerColor(playerNum);
+        switch (phase)
+        {
+            case GameplayPhase.PlacementPlayer1: // intentional fall-through
+            case GameplayPhase.PlacementPlayer2:
+                {
+                    turnHiderTitle.text = "<color=" + colorHex + ">Player " + playerNum + "</color>'s Turn to Place";
+                    break;
+
+                }
+            case GameplayPhase.TurnPlayer1:
+            case GameplayPhase.TurnPlayer2:
+                {
+                    turnHiderTitle.text = "<color=" + colorHex + ">Player " + playerNum + "</color>'s Turn";
+                    break;
+
+                }
+        }
         turnHider.SetActive(true);
-        turnHiderTitle.text = title;
     }
 }
