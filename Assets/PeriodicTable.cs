@@ -132,7 +132,7 @@ public class PeriodicTable : MonoBehaviour
         bombingEnabled = val;
     }
 
-    Element WorldToElement(Vector2 worldPos)
+    public Element WorldToElement(Vector2 worldPos)
     {
         Vector2 localPos = worldPos - new Vector2(transform.position.x, transform.position.y);
         int x = TileGrid.WorldToTileIndex(localPos.x);
@@ -154,6 +154,26 @@ public class PeriodicTable : MonoBehaviour
         }
 
         return null;
+    }
+
+    public List<Element> GetAdjacentElements(Element e)
+    {
+        Vector3[] offsets = new Vector3[] {
+            new Vector3(TileGrid.kTileSize, 0),
+            new Vector3(-TileGrid.kTileSize, 0),
+            new Vector3(0, TileGrid.kTileSize),
+            new Vector3(0, -TileGrid.kTileSize)
+        };
+        List<Element> ret = new List<Element>();
+        for (int i = 0; i < 4; i++)
+        {
+            Element adj = WorldToElement(e.transform.position + offsets[i]);
+            if (adj)
+            {
+                ret.Add(adj);
+            }
+        }
+        return ret;
     }
 
     public bool TryDropShip(Ship ship)
@@ -210,9 +230,8 @@ public class PeriodicTable : MonoBehaviour
             Element element = WorldToElement(ship.transform.position + offset);
             if (element != null)
             {
-              eles.Add(element);
+                eles.Add(element);
             }
-
         }
 
         return eles;

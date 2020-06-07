@@ -37,7 +37,6 @@ public class TurnHider : MonoBehaviour
             remaining -= Time.deltaTime;
             yield return null;
         }
-        Input.ResetInputAxes();
         gameObject.SetActive(false);
     }
 

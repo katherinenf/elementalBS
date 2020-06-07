@@ -1055,7 +1055,7 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 12800000, guid: 9e326c59e7ca6db419c4b956a89ec88c, type: 3}
-    m_FontSize: 195
+    m_FontSize: 104
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 2
@@ -1097,6 +1097,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 86742658}
     m_Modifications:
+    - target: {fileID: 1852196115417309788, guid: 0dec53143651a1946b67a7c1bf714836,
+        type: 3}
+      propertyPath: m_Name
+      value: Question 2
+      objectReference: {fileID: 0}
     - target: {fileID: 1852196115621737758, guid: 0dec53143651a1946b67a7c1bf714836,
         type: 3}
       propertyPath: m_Colors.m_NormalColor.r
@@ -1162,11 +1167,6 @@ PrefabInstance:
       propertyPath: m_Navigation.m_SelectOnDown
       value: 
       objectReference: {fileID: 1961483368}
-    - target: {fileID: 1852196115417309788, guid: 0dec53143651a1946b67a7c1bf714836,
-        type: 3}
-      propertyPath: m_Name
-      value: Question 2
-      objectReference: {fileID: 0}
     - target: {fileID: 1852196115417309789, guid: 0dec53143651a1946b67a7c1bf714836,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -5022,8 +5022,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1836679745}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 4.83, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 4.642, z: 0}
+  m_LocalScale: {x: 0.922, y: 0.803, z: 1}
   m_Children: []
   m_Father: {fileID: 1655626380}
   m_RootOrder: 0
@@ -5625,16 +5625,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 86742658}
     m_Modifications:
-    - target: {fileID: 1852196115621737758, guid: 0dec53143651a1946b67a7c1bf714836,
-        type: 3}
-      propertyPath: m_Navigation.m_SelectOnDown
-      value: 
-      objectReference: {fileID: 244788920}
     - target: {fileID: 1852196115417309788, guid: 0dec53143651a1946b67a7c1bf714836,
         type: 3}
       propertyPath: m_Name
       value: Question 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1852196115621737758, guid: 0dec53143651a1946b67a7c1bf714836,
+        type: 3}
+      propertyPath: m_Navigation.m_SelectOnDown
+      value: 
+      objectReference: {fileID: 244788920}
     - target: {fileID: 1852196115417309789, guid: 0dec53143651a1946b67a7c1bf714836,
         type: 3}
       propertyPath: m_LocalPosition.x

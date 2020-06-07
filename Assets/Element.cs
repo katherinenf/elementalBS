@@ -73,22 +73,22 @@ public class Element : MonoBehaviour
         return isBombed;
     }
 
-    public void Bomb()
+    public bool Bomb()
     {
         sprite.color = Color.white;
+        isBombed = true;
         if (HasShip())
         {
-            //sprite.color = Color.red;
             SetIcon(ElementIcon.Hit);
             ship.OnBomb();
+            return true;
         }
         else
         {
             SetIcon(ElementIcon.Miss);
-            //sprite.color = Color.blue;
+            return false;
         }
 
-        isBombed = true;
     }
 
     public void SetAsTarget(bool val)

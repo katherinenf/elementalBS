@@ -12,7 +12,7 @@ public class Ship : MonoBehaviour
 
     private bool grabbed;
     public PeriodicTable GM;
-    private List<Element> elements;
+    private List<Element> elements = new List<Element>();
     private Vector3 startPos;
     private bool startRotation;
 
@@ -24,7 +24,6 @@ public class Ship : MonoBehaviour
     {
         startPos = transform.position;
         startRotation = rotated;
-        elements = new List<Element>();
     }
 
     // Update is called once per frame
@@ -91,7 +90,7 @@ public class Ship : MonoBehaviour
     }
 
     // assigns rotated and updates sprite
-    void SetShipRotation(bool isRotated)
+    public void SetShipRotation(bool isRotated)
     {
         rotated = isRotated;
         if (rotated)
@@ -116,6 +115,7 @@ public class Ship : MonoBehaviour
         if (IsDestroyed())
         {
             gameObject.SetActive(true);
+            SetAlpha(1.0f);
         }
     }
 
