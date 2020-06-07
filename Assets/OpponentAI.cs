@@ -138,14 +138,14 @@ public class OpponentAI
 
                     // Add the first endcap
                     Element endcap1 = table.WorldToElement(run.First().transform.position + dir * TileGrid.kTileSize);
-                    if (endcap1)
+                    if (endcap1 && !endcap1.IsBombed())
                     {
                         suspectedTiles.Add(endcap1);
                     }
 
                     // Add the second endcap
                     Element endcap2 = table.WorldToElement(run.Last().transform.position + -dir * TileGrid.kTileSize);
-                    if (endcap2)
+                    if (endcap2 && !endcap2.IsBombed())
                     {
                         suspectedTiles.Add(endcap2);
                     }
