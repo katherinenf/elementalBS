@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -40,6 +41,8 @@ public class GameplayManager : MonoBehaviour
     public GameObject[] hiddenAfterPlacement;
 
     public GameObject[] shownAfterPlacement;
+
+    public Image[] banners = new Image[2];
 
     public SpriteRenderer topBanner;
 
@@ -130,6 +133,7 @@ public class GameplayManager : MonoBehaviour
     {
         phase = (playerNum == 1) ? GameplayPhase.PlacementPlayer1 : GameplayPhase.PlacementPlayer2;
         SetHelpText(HelpText.Placement);
+        SetActiveBanner(playerNum);
 
         if (playerNum == 2 && opponentAI != null)
         {
@@ -166,6 +170,7 @@ public class GameplayManager : MonoBehaviour
 
         // Update the UI texts
         SetHeader(playerNum, phase);
+        SetActiveBanner(playerNum);
         if (playerNum == 2 && opponentAI != null)
         {
             SetHelpText(HelpText.None);
@@ -247,7 +252,7 @@ public class GameplayManager : MonoBehaviour
                 break;
 
             }
-            case GameplayPhase.TurnPlayer1:
+            case GameplayPhase.TurnPlayer1: // intentional fall-through
             case GameplayPhase.TurnPlayer2:
             {
                 phaseText.text = GetPlayerName(playerNum) + "'s Turn";
@@ -302,5 +307,13 @@ public class GameplayManager : MonoBehaviour
             return "The <color=" + colorHex + ">Computer</color>";
         }
         return "<color=" + colorHex + ">Player " + playerNum + "</color>";
+    }
+
+    void SetActiveBanner(int playerNum)
+    {
+        banners[ToOppositePlayer(playerNum) - 1].ChangeAlpha(0f);
+        Array.ForEach(banners[ToOppositePlayer(playerNum) - 1].GetComponentsInChildren<Graphic>(), g => g.ChangeAlpha(0.4f));
+        banners[playerNum - 1].ChangeAlpha(1.0f);
+        Array.ForEach(banners[playerNum - 1].GetComponentsInChildren<Graphic>(), g => g.ChangeAlpha(1.0f));
     }
 }
