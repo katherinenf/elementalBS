@@ -1,7 +1,7 @@
 {
 "companyName": "Widget LLC",
 "productName": "Elemental Battleship",
-"productVersion": "0.6",
+"productVersion": "0.7",
 "dataUrl": "docs.data.unityweb",
 "wasmCodeUrl": "docs.wasm.code.unityweb",
 "wasmFrameworkUrl": "docs.wasm.framework.unityweb",
@@ -12,5 +12,5 @@
 "cacheControl": {"default": "must-revalidate"},
 "developmentBuild": false,
 "multithreading": false,
-"unityVersion": "2019.3.0a11"
+"unityVersion": "2019.3.3f1"
 }
